@@ -1,6 +1,6 @@
 package com.flatly.controller;
 
-import com.flatly.model.Flat;
+import com.flatly.dto.FlatDTO;
 import com.flatly.service.FlatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,32 +9,34 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/flats") // Ensure this matches the URL you're calling
+@RequestMapping("/api/flats")
 public class FlatController {
 
     @Autowired
     private FlatService flatService;
 
     @GetMapping
-    public List<Flat> getAllFlats() {
-        return flatService.getAllFlats();
+    public ResponseEntity<List<FlatDTO>> getAllFlats() {
+        List<FlatDTO> flats = flatService.getAllFlats();
+        return ResponseEntity.ok(flats);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Flat> getFlatById(@PathVariable Long id) {
-        return flatService.getFlatById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<FlatDTO> getFlatById(@PathVariable Long id) {
+        FlatDTO flatDTO = flatService.getFlatById(id);
+        return ResponseEntity.ok(flatDTO);
     }
 
     @PostMapping
-    public Flat createFlat(@RequestBody Flat flat) {
-        return flatService.createFlat(flat);
+    public ResponseEntity<FlatDTO> createFlat(@RequestBody FlatDTO flatDTO) {
+        FlatDTO createdFlat = flatService.createFlat(flatDTO);
+        return ResponseEntity.ok(createdFlat);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Flat> updateFlat(@PathVariable Long id, @RequestBody Flat flatDetails) {
-        return ResponseEntity.ok(flatService.updateFlat(id, flatDetails));
+    public ResponseEntity<FlatDTO> updateFlat(@PathVariable Long id, @RequestBody FlatDTO flatDTO) {
+        FlatDTO updatedFlat = flatService.updateFlat(id, flatDTO);
+        return ResponseEntity.ok(updatedFlat);
     }
 
     @DeleteMapping("/{id}")

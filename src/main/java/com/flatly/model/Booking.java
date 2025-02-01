@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 @Entity
 @Data
-@Table(name = "booking")  // Ensure the table name matches the database
+@Table(name = "booking")
 public class Booking {
 
     @Id

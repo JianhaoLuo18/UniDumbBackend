@@ -2,6 +2,8 @@ package com.flatly.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.List;
 
@@ -28,14 +30,19 @@ public class Flat {
     @Column
     private Float distance;
 
-    @Column(columnDefinition = "json")
+    @Column(columnDefinition = "jsonb")
+    @JdbcTypeCode(SqlTypes.JSON)
     private List<String> amenities;
 
     @Column
     private String availability;
 
-    @Column(columnDefinition = "json")
+    @Column(columnDefinition = "jsonb")
+    @JdbcTypeCode(SqlTypes.JSON)
     private List<String> images;
+
+    @Column(nullable = false)
+    private Integer roomNumber;
 
     @OneToMany(mappedBy = "flat", cascade = CascadeType.ALL)
     private List<Booking> bookings;

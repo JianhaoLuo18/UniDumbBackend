@@ -1,6 +1,6 @@
 package com.flatly.controller;
 
-import com.flatly.model.Booking;
+import com.flatly.dto.BookingDTO;
 import com.flatly.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,25 +16,29 @@ public class BookingController {
     private BookingService bookingService;
 
     @GetMapping
-    public List<Booking> getAllBookings() {
-        return bookingService.getAllBookings();
+    public ResponseEntity<List<BookingDTO>> getAllBookings() {
+        List<BookingDTO> bookings = bookingService.getAllBookings();
+        return ResponseEntity.ok(bookings);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBookingById(@PathVariable Long id) {
-        return bookingService.getBookingById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<BookingDTO> getBookingById(@PathVariable Long id) {
+        BookingDTO bookingDTO = bookingService.getBookingById(id);
+        return ResponseEntity.ok(bookingDTO);
     }
 
     @PostMapping
-    public Booking createBooking(@RequestBody Booking booking) {
-        return bookingService.createBooking(booking);
+    public ResponseEntity<BookingDTO> createBooking(@RequestBody BookingDTO bookingDTO) {
+        BookingDTO createdBooking = bookingService.createBooking(bookingDTO);
+        return ResponseEntity.ok(createdBooking);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Booking> updateBooking(@PathVariable Long id, @RequestBody Booking bookingDetails) {
-        return ResponseEntity.ok(bookingService.updateBooking(id, bookingDetails));
+    public ResponseEntity<BookingDTO> updateBooking(
+            @PathVariable Long id,
+            @RequestBody BookingDTO bookingDTO) {
+        BookingDTO updatedBooking = bookingService.updateBooking(id, bookingDTO);
+        return ResponseEntity.ok(updatedBooking);
     }
 
     @DeleteMapping("/{id}")
