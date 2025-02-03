@@ -46,4 +46,16 @@ public class BookingController {
         bookingService.deleteBooking(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{id}/cancel")
+    public ResponseEntity<Void> cancelBooking(@PathVariable Long id) {
+        bookingService.cancelBooking(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/active")
+    public ResponseEntity<List<BookingDTO>> getActiveBookingsByUserEmail(@RequestParam String userEmail) {
+        List<BookingDTO> activeBookings = bookingService.getActiveBookingsByUserEmail(userEmail);
+        return ResponseEntity.ok(activeBookings);
+    }
 }

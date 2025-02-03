@@ -3,44 +3,42 @@ package com.flatly.service;
 import com.flatly.dto.FlatDTO;
 import com.flatly.model.Flat;
 import com.flatly.repository.FlatRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class FlatService {
 
-    @Autowired
-    private FlatRepository flatRepository;
+    private final FlatRepository flatRepository;
 
-    // Get all flats as DTOs
+    public FlatService(FlatRepository flatRepository) {
+        this.flatRepository = flatRepository;
+    }
+
+    // Other CRUD methods remain unchanged:
     public List<FlatDTO> getAllFlats() {
         return flatRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    // Get a flat by ID as a DTO
     public FlatDTO getFlatById(Long id) {
         Flat flat = flatRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Flat not found with id: " + id));
         return convertToDTO(flat);
     }
 
-    // Create a flat and return the DTO
     public FlatDTO createFlat(FlatDTO flatDTO) {
         Flat flat = convertToEntity(flatDTO);
         Flat savedFlat = flatRepository.save(flat);
         return convertToDTO(savedFlat);
     }
 
-    // Update a flat and return the DTO
     public FlatDTO updateFlat(Long id, FlatDTO flatDTO) {
         Flat flat = flatRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Flat not found with id: " + id));
-
+        // Update fields
         flat.setName(flatDTO.getName());
         flat.setLocation(flatDTO.getLocation());
         flat.setPrice(flatDTO.getPrice());
@@ -50,17 +48,28 @@ public class FlatService {
         flat.setAvailability(flatDTO.getAvailability());
         flat.setImages(flatDTO.getImages());
         flat.setRoomNumber(flatDTO.getRoomNumber());
-
         Flat updatedFlat = flatRepository.save(flat);
         return convertToDTO(updatedFlat);
     }
 
-    // Delete a flat
     public void deleteFlat(Long id) {
         flatRepository.deleteById(id);
     }
 
-    // Convert Flat entity to FlatDTO
+    // Unified dynamic filtering method:
+    public List<FlatDTO> filterFlats(String location,
+                                     Double minPrice,
+                                     Double maxPrice,
+                                     Integer roomNumber,
+                                     Float minDistance,
+                                     Float maxDistance) {
+        List<Flat> flats = flatRepository.filterFlats(location, minPrice, maxPrice, roomNumber, minDistance, maxDistance);
+        return flats.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Conversion methods:
     private FlatDTO convertToDTO(Flat flat) {
         FlatDTO dto = new FlatDTO();
         dto.setId(flat.getId());
@@ -76,7 +85,6 @@ public class FlatService {
         return dto;
     }
 
-    // Convert FlatDTO to Flat entity
     private Flat convertToEntity(FlatDTO flatDTO) {
         Flat flat = new Flat();
         flat.setId(flatDTO.getId());

@@ -61,6 +61,20 @@ public class BookingService {
         bookingRepository.deleteById(id);
     }
 
+    public void cancelBooking(Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found with id: " + bookingId));
+        booking.setStatus(Booking.BookingStatus.CANCELLED);
+        bookingRepository.save(booking);
+    }
+
+    // New method to get active bookings by user email
+    public List<BookingDTO> getActiveBookingsByUserEmail(String userEmail) {
+        return bookingRepository.findByUserEmailAndStatus(userEmail, Booking.BookingStatus.ACTIVE).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
     private BookingDTO convertToDTO(Booking booking) {
         BookingDTO dto = new BookingDTO();
         dto.setId(booking.getId());
