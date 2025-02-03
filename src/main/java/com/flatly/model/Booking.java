@@ -37,7 +37,21 @@ public class Booking {
     @Column(nullable = false)
     private String system;
 
+    // New attribute for created date
+    @Column(name = "created_at", nullable = false)
+    private LocalDate createdAt;
+
+    // Automatically set createdAt before persisting
+    @PrePersist
+    public void prePersist() {
+        if (createdAt == null) {
+            createdAt = LocalDate.now();
+        }
+    }
+
     public enum BookingStatus {
-        ACTIVE, CANCELLED
+        ACTIVE, 
+        CANCELLED,
+        COMPLETED  // New status added
     }
 }
