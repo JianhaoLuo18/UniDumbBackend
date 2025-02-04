@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://database-1-instance-1.clg8my40c082.eu-central-1.rds.amazonaws.com:5432/postgres
     username: postgres
-    password: iSjHRRzfQeu0sR7bnPPR
+    password: 
   jpa:
     hibernate:
       ddl-auto: update # Use 'validate' or 'none' in production
